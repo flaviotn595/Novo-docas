@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status das Docas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #f7f7f7;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        button {
+            padding: 10px 20px;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 0 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:focus {
+            outline: none;
+        }
+        .occupied {
+            color: #dc3545;
+        }
+        .maintenance {
+            color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <h1>Status das Docas</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Status</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody id="docks-table">
+        </tbody>
+    </table>
+    <script>
+        let docks = {
+            "docas": [
+                {"id": 41, "status": "disponível"},
+                {"id": 42, "status": "disponível"},
+                {"id": 43, "status": "disponível"},
+                {"id": 44, "status": "disponível"},
+                {"id": 45, "status": "disponível"},
+                {"id": 46, "status": "disponível"},
+                {"id": 47, "status": "disponível"},
+                {"id": 48, "status": "disponível"},
+                {"id": 49, "status": "disponível"},
+                {"id": 50, "status": "disponível"},
+                {"id": 51, "status": "disponível"},
+                {"id": 52, "status": "disponível"},
+                {"id": 53, "status": "disponível"},
+                {"id": 54, "status": "disponível"},
+                {"id": 55, "status": "disponível"},
+                {"id": 56, "status": "disponível"},
+                {"id": 57, "status": "disponível"},
+                {"id": 58, "status": "disponível"},
+                {"id": 59, "status": "disponível"},
+                {"id": 60, "status": "disponível"},
+                {"id": 61, "status": "disponível"},
+                {"id": 62, "status": "disponível"},
+                {"id": 63, "status": "disponível"},
+                {"id": 64, "status": "disponível"},
+                {"id": 65, "status": "disponível"}
+            ]
+        };
+
+        function renderTable() {
+            const tableBody = document.getElementById('docks-table');
+            tableBody.innerHTML = '';
+            docks.docas.forEach(dock => {
+                let statusIcon = '';
+                if (dock.status === 'ocupada') {
+                    statusIcon = '<i class="fas fa-truck-moving occupied"></i>';
+                } else if (dock.status === 'em manutenção') {
+                    statusIcon = '<i class="fas fa-tools maintenance"></i>';
+                }
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${dock.id} ${statusIcon}</td>
+                    <td>${dock.status}</td>
+                    <td>
+                        <button onclick="updateStatus(${dock.id}, 'disponível')">Disponível</button>
+                        <button onclick="updateStatus(${dock.id}, 'ocupada')">Ocupada</button>
+                        <button onclick="updateStatus(${dock.id}, 'em manutenção')">Manutenção</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            saveToLocalStorage();
+        }
+
+        function updateStatus(id, newStatus) {
+            const dock = docks.docas.find(d => d.id === id);
+            if (dock) {
+                dock.status = newStatus;
+                renderTable();
+            }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('docks', JSON.stringify(docks));
+        }
+
+        function loadFromLocalStorage() {
+            const savedDocks = localStorage.getItem('docks');
+            if (savedDocks) {
+                docks = JSON.parse(savedDocks);
+            }
+        }
+
+        window.onload = function() {
+            loadFromLocalStorage();
+            renderTable();
+        }
+    </script>
+</body>
+</html>
